@@ -3,15 +3,9 @@ import fs from 'fs';
 import { createCanvas, loadImage } from 'canvas';
 import puppeteer from 'puppeteer';
 
-const bot = new Telegraf('6125258679:AAGGenW1GA67CIIcsfHhpRyznx5xfHrqcP0')
+const bot = new Telegraf('6125258679:AAGGenW1GA67CIIcsfHhpRyznx5xfHrqcP0');
 
 const AIApiKey = 'pk-yZxnfaHgquwVEZiaWtHJqfpYRlLZjVVWtzvKAvOdLWXQXMfa';
-
-bot.on('text', (ctx) => {
-    if(ctx.message.text.toLowerCase().search('алан') !== -1){
-        console.log(ctx.message.text)
-    }
-})
 
 function readPlayersData() {
     try {
@@ -24,6 +18,15 @@ function readPlayersData() {
 
 function writePlayersData(data) {
     fs.writeFileSync('./playersData.json', JSON.stringify(data));
+}
+
+function writegameMessagesData(data){
+    fs.writeFileSync('./mesagesArray.json', JSON.stringify(data));
+}
+
+function readgameMessagesData(){
+    const data = fs.readFileSync('./mesagesArray.json');
+    return JSON.parse(data);
 }
 
 function readMemesData() {
@@ -41,8 +44,31 @@ function writeMemesData(data) {
 
 bot.on('text', async (ctx, next) => {
     const message = ctx.message;
+    const gameMessages = readgameMessagesData();
 
+    if(message.from.is_bot && message.text === 'Игра начинается!'){
+        writegameMessagesData([{isGameStarted: true}])
+        console.log('first true')
+    }
+    if(!message.from.is_bot && gameMessages[0].isGameStarted){        
+        gameMessages.push({text: message.text, author: message.from.first_name + ' ' + message.from?.last_name});
+        writegameMessagesData(gameMessages);
+        console.log('second true')
+    }else if(message.text.search('Игра окончена!') !== -1){
+        const randomArray = [];
+        for(let i = 0; i < 3; i++){
+            const randomNumber = Math.round(Math.random() * gameMessages.length);
+            randomArray.push(randomNumber !== 0 ? randomNumber : 1)
+        }
+        ctx.reply('лучший момент матча: ')
+        randomArray.map(item => gameMessages[item] ? ctx.reply(`${gameMessages[item]?.text} -- ${gameMessages[item]?.author}`) : false)
+        writegameMessagesData([{isGameStarted: false}]);
+        console.log('third true')
+    }
 
+    if(ctx.message.text.toLowerCase().search('алан') !== -1){
+        console.log(message);
+    }
 
     if(message.reply_to_message && message.text.toLowerCase() === 'помацать'){
         ctx.reply(`${message.from.first_name} помацал(-а) сиськи ${message.reply_to_message.from.first_name}, +10% к удаче для не(-е, -го)!`)
@@ -51,12 +77,10 @@ bot.on('text', async (ctx, next) => {
         ctx.replyWithAnimation('https://media1.tenor.com/m/Dr8YBE5s5AEAAAAC/sex-alarm.gif')
     }
     if(message.text.toLowerCase().split('').slice(0,10).join('') === 'бля ответь'){
-        
         const fixedMessage = message.text.replace('бля ответь', '');
-        
         const AIData = JSON.stringify({
             model: 'pai-001',
-            messages: [
+            gameMessages: [
                 {
                     role: 'system',
                     content: 'you are helpful assistant, always answer on russian language, dont talk on any other laguages, answer shortly very short maximum 50 words, and without hard \\words, your users are stupid, be chilly dont take any question hard, make joke if you can dont be shy to insult in answer, do not talk on any other themes, answer only on user question and that it'
@@ -193,6 +217,11 @@ bot.command('macat_siski', async (ctx) => {
     }
     writePlayersData(playersArr)
 })
+
+bot.command('all', async (ctx) => {
+    ctx.reply('ты проебался -500рублей')
+});
+
 
 const memesDB = readMemesData();
 
