@@ -7,7 +7,7 @@ const bot = new Telegraf('6125258679:AAGGenW1GA67CIIcsfHhpRyznx5xfHrqcP0')
 
 const AIApiKey = 'pk-yZxnfaHgquwVEZiaWtHJqfpYRlLZjVVWtzvKAvOdLWXQXMfa'
 
-const port = 3000
+const port = 10000
 
 function readPlayersData() {
 	try {
