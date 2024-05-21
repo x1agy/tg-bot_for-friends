@@ -3,12 +3,11 @@ import fs from 'fs'
 import { createCanvas, loadImage } from 'canvas'
 import puppeteer from 'puppeteer'
 
-const bot = new Telegraf(
-	'6125258679:AAGGenW1GA67CIIcsfHhpRyznx5xfHrqcP0'
-)
+const bot = new Telegraf('6125258679:AAGGenW1GA67CIIcsfHhpRyznx5xfHrqcP0')
 
-const AIApiKey =
-	'pk-yZxnfaHgquwVEZiaWtHJqfpYRlLZjVVWtzvKAvOdLWXQXMfa'
+const AIApiKey = 'pk-yZxnfaHgquwVEZiaWtHJqfpYRlLZjVVWtzvKAvOdLWXQXMfa'
+
+const port = 3000
 
 function readPlayersData() {
 	try {
@@ -20,17 +19,11 @@ function readPlayersData() {
 }
 
 function writePlayersData(data) {
-	fs.writeFileSync(
-		'./playersData.json',
-		JSON.stringify(data)
-	)
+	fs.writeFileSync('./playersData.json', JSON.stringify(data))
 }
 
 function writegameMessagesData(data) {
-	fs.writeFileSync(
-		'./mesagesArray.json',
-		JSON.stringify(data)
-	)
+	fs.writeFileSync('./mesagesArray.json', JSON.stringify(data))
 }
 
 function readgameMessagesData() {
@@ -48,10 +41,7 @@ function readMemesData() {
 }
 
 function writeMemesData(data) {
-	fs.writeFileSync(
-		'./memesURLDB.json',
-		JSON.stringify(data)
-	)
+	fs.writeFileSync('./memesURLDB.json', JSON.stringify(data))
 }
 
 bot.on('text', async (ctx, next) => {
@@ -68,28 +58,18 @@ bot.on('text', async (ctx, next) => {
 	if (message.text === 'Игра начинается!') {
 		writegameMessagesData([{ isGameStarted: true }])
 	}
-	if (
-		!message.from.is_bot &&
-		gameMessages[0].isGameStarted
-	) {
+	if (!message.from.is_bot && gameMessages[0].isGameStarted) {
 		gameMessages.push({
 			text: message.text,
-			author:
-				message.from.first_name +
-				' ' +
-				message.from?.last_name,
+			author: message.from.first_name + ' ' + message.from?.last_name,
 		})
 		writegameMessagesData(gameMessages)
 	}
 	if (message.text.search('Игра окончена!') !== -1) {
 		const randomArray = []
 		for (let i = 0; i < 3; i++) {
-			const randomNumber = Math.round(
-				Math.random() * gameMessages.length
-			)
-			randomArray.push(
-				randomNumber !== 0 ? randomNumber : 1
-			)
+			const randomNumber = Math.round(Math.random() * gameMessages.length)
+			randomArray.push(randomNumber !== 0 ? randomNumber : 1)
 		}
 		ctx.reply('лучший момент матча: ')
 		randomArray.map((item) =>
@@ -102,20 +82,11 @@ bot.on('text', async (ctx, next) => {
 		writegameMessagesData([{ isGameStarted: false }])
 	}
 
-	if (
-		ctx.message.text.toLowerCase().search('алан') !== -1
-	) {
-		console.log(
-			message.text,
-			'  ----  ',
-			message.from.first_name
-		)
+	if (ctx.message.text.toLowerCase().search('алан') !== -1) {
+		console.log(message.text, '  ----  ', message.from.first_name)
 	}
 
-	if (
-		message.reply_to_message &&
-		message.text.toLowerCase() === 'помацать'
-	) {
+	if (message.reply_to_message && message.text.toLowerCase() === 'помацать') {
 		ctx.reply(
 			`${message.from.first_name} помацал(-а) сиськи ${message.reply_to_message.from.first_name}, +10% к удаче для не(-е, -го)!`
 		)
@@ -126,11 +97,8 @@ bot.on('text', async (ctx, next) => {
 		)
 	}
 	if (
-		message.text
-			.toLowerCase()
-			.split('')
-			.slice(0, 10)
-			.join('') === 'бля ответь'
+		message.text.toLowerCase().split('').slice(0, 10).join('') ===
+		'бля ответь'
 	) {
 		ctx.reply('ИДИ НАХУЙ')
 	}
@@ -173,18 +141,13 @@ bot.on('text', async (ctx, next) => {
 	// }
 
 	if (message.text.toLowerCase() === 'бля процитируй') {
-		if (
-			ctx.message.reply_to_message &&
-			ctx.message.reply_to_message.text
-		) {
-			const repliedToUserId =
-				ctx.message.reply_to_message.from.id
+		if (ctx.message.reply_to_message && ctx.message.reply_to_message.text) {
+			const repliedToUserId = ctx.message.reply_to_message.from.id
 			bot.telegram
 				.getUserProfilePhotos(repliedToUserId)
 				.then((userProfilePhotos) => {
 					if (userProfilePhotos.total_count > 0) {
-						const photo =
-							userProfilePhotos.photos[0][0]
+						const photo = userProfilePhotos.photos[0][0]
 
 						bot.telegram
 							.getFile(photo.file_id)
@@ -192,31 +155,21 @@ bot.on('text', async (ctx, next) => {
 								const photoUrl = `https://api.telegram.org/file/bot${'6125258679:AAGGenW1GA67CIIcsfHhpRyznx5xfHrqcP0'}/${fileInfo.file_path}`
 
 								const replyFrom =
-									ctx.message
-										.reply_to_message
-										.from
+									ctx.message.reply_to_message.from
 								const imageBuffer =
 									await createImageWithTextAndPhoto(
 										photoUrl,
-										ctx.message
-											.reply_to_message
-											.text,
+										ctx.message.reply_to_message.text,
 										replyFrom.first_name +
 											' ' +
-											(replyFrom
-												.last_name
-												?.length
+											(replyFrom.last_name?.length
 												? replyFrom.last_name
 												: '')
 									)
 
 								const imageUrl =
-									await postImageInImgBB(
-										imageBuffer
-									)
-								ctx.replyWithPhoto(
-									imageUrl.data.url
-								)
+									await postImageInImgBB(imageBuffer)
+								ctx.replyWithPhoto(imageUrl.data.url)
 							})
 					} else {
 						ctx.reply('иди нахуй')
@@ -231,28 +184,19 @@ bot.on('text', async (ctx, next) => {
 		try {
 			const browser = await puppeteer.launch()
 			const page = await browser.newPage()
-			await page.goto(
-				'https://kakoysegodnyaprazdnik.ru/'
-			)
+			await page.goto('https://kakoysegodnyaprazdnik.ru/')
 
 			await page.waitForTimeout(3000)
 
-			const submitButton = await page.$(
-				'input[type="submit"]'
-			)
+			const submitButton = await page.$('input[type="submit"]')
 			await submitButton.click()
 
-			await page.waitForSelector(
-				'span[itemprop="text"]'
-			)
+			await page.waitForSelector('span[itemprop="text"]')
 			const datesList = await page.$$eval(
 				'span[itemprop="text"]',
 				(spans) => {
 					return spans
-						.map(
-							(span) =>
-								'• ' + span.textContent
-						)
+						.map((span) => '• ' + span.textContent)
 						.join('\n')
 				}
 			)
@@ -290,10 +234,7 @@ bot.command('macat_siski', async (ctx) => {
 	)
 	const howFarAwayIs =
 		Math.abs(
-			(
-				topOneSize /
-				playersArr[playerIndex]?.breastSize
-			).toFixed(1)
+			(topOneSize / playersArr[playerIndex]?.breastSize).toFixed(1)
 		) || 1
 
 	try {
@@ -308,8 +249,7 @@ bot.command('macat_siski', async (ctx) => {
 	}
 
 	if (playerIndex !== -1) {
-		const expiredTime =
-			dateNow - playersArr[playerIndex].lastPlayedTime
+		const expiredTime = dateNow - playersArr[playerIndex].lastPlayedTime
 		if (expiredTime < 14400000) {
 			ctx.reply(
 				`Друг (@${ctx.from.username}), не хуейте, вы сможете сыграть через ${
@@ -321,9 +261,7 @@ bot.command('macat_siski', async (ctx) => {
 				if (howFarAwayIs > 1.5) {
 					const bonusSize = Math.abs(
 						Math.trunc(
-							(playersArr[playerIndex]
-								.breastSize /
-								100) *
+							(playersArr[playerIndex].breastSize / 100) *
 								7 *
 								howFarAwayIs
 						)
@@ -332,44 +270,36 @@ bot.command('macat_siski', async (ctx) => {
 						`Вы успешно дотянулись до своих tits @${
 							ctx.from.username
 						} и помацали их, +${size}см и +${bonusSize} за отставание, теперь ваши сиськи размером ${
-							playersArr[playerIndex]
-								.breastSize +
+							playersArr[playerIndex].breastSize +
 							size +
 							bonusSize
 						}см, поздравляю друг`
 					)
 
-					playersArr[playerIndex].breastSize +=
-						size + bonusSize
-					playersArr[playerIndex].lastPlayedTime =
-						dateNow
+					playersArr[playerIndex].breastSize += size + bonusSize
+					playersArr[playerIndex].lastPlayedTime = dateNow
 				} else {
 					ctx.reply(
 						`Вы успешно дотянулись до своих tits @${
 							ctx.from.username
 						} и помацали их, +${size}см, теперь ваши сиськи размером ${
-							playersArr[playerIndex]
-								.breastSize + size
+							playersArr[playerIndex].breastSize + size
 						}см, поздравляю друг`
 					)
 
-					playersArr[playerIndex].breastSize +=
-						size
-					playersArr[playerIndex].lastPlayedTime =
-						dateNow
+					playersArr[playerIndex].breastSize += size
+					playersArr[playerIndex].lastPlayedTime = dateNow
 				}
 			} else {
 				ctx.reply(
 					`Вы немножко проебались @${
 						ctx.from.username
 					}, -${size}см, теперь ваши сиськи размером ${
-						playersArr[playerIndex].breastSize -
-						size
+						playersArr[playerIndex].breastSize - size
 					}см, пиздуйте`
 				)
 				playersArr[playerIndex].breastSize -= size
-				playersArr[playerIndex].lastPlayedTime =
-					dateNow
+				playersArr[playerIndex].lastPlayedTime = dateNow
 			}
 		}
 	} else {
@@ -405,20 +335,14 @@ bot.command('meme', async (ctx) => {
 		)
 	}
 	ctx.replyWithPhoto(
-		Input.fromURL(
-			memesDB[
-				Math.trunc(Math.random() * memesDB.length)
-			]
-		)
+		Input.fromURL(memesDB[Math.trunc(Math.random() * memesDB.length)])
 	)
 })
 
 bot.command('top', async (ctx) => {
 	const rawArr = readPlayersData()
 	let laderString = ''
-	const playersArr = rawArr.sort(
-		(a, b) => b.breastSize - a.breastSize
-	)
+	const playersArr = rawArr.sort((a, b) => b.breastSize - a.breastSize)
 	playersArr.map(
 		(item, index) =>
 			(laderString += `${index + 1}. ${item.name}, ${item.breastSize}см\n`)
@@ -460,9 +384,7 @@ bot.command('post_meme', async (ctx) => {
 		const data = await response.json()
 
 		if (data?.error) {
-			ctx.reply(
-				`Чё за хуйню ты мне скинул, друг ${data.error.message}`
-			)
+			ctx.reply(`Чё за хуйню ты мне скинул, друг ${data.error.message}`)
 		} else {
 			ctx.reply(
 				'Твой нацистский мем успешно загружен, наверное, не ебу, я не могу все ошибки обработать'
@@ -475,14 +397,10 @@ bot.command('post_meme', async (ctx) => {
 	}
 })
 
-async function createImageWithTextAndPhoto(
-	photoUrl,
-	text,
-	quotedNickname
-) {
+async function createImageWithTextAndPhoto(photoUrl, text, quotedNickname) {
 	const canvas = createCanvas(
 		500,
-		Math.trunc((text.length / 50) * 16) + 120
+		Math.max(Math.trunc((text.length / 50) * 16), 0) + 120
 	)
 	console.log((text.length / 50) * 16)
 	const ctx = canvas.getContext('2d')
@@ -510,14 +428,7 @@ async function createImageWithTextAndPhoto(
 	return imageBuffer
 }
 
-function wrapText(
-	context,
-	text,
-	x,
-	y,
-	maxWidth,
-	lineHeight
-) {
+function wrapText(context, text, x, y, maxWidth, lineHeight) {
 	const words = text.split(' ')
 	let line = ''
 
