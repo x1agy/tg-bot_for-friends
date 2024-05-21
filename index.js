@@ -2,12 +2,16 @@ import { Telegraf, Input } from 'telegraf'
 import fs from 'fs'
 import { createCanvas, loadImage } from 'canvas'
 import puppeteer from 'puppeteer'
+import express from 'express'
 
 const bot = new Telegraf('6125258679:AAGGenW1GA67CIIcsfHhpRyznx5xfHrqcP0')
 
 const AIApiKey = 'pk-yZxnfaHgquwVEZiaWtHJqfpYRlLZjVVWtzvKAvOdLWXQXMfa'
 
 const port = process.env.PORT || 10000
+const expressApp = express()
+
+expressApp.listen(port, () => {})
 
 function readPlayersData() {
 	try {
@@ -470,7 +474,7 @@ async function postImageInImgBB(imgBuffer) {
 	}
 }
 
-bot.launch({ webhook: { port: port, host: '0.0.0.0' } })
+bot.launch({})
 
 process.once('SIGINT', () => bot.stop('SIGINT'))
 process.once('SIGTERM', () => bot.stop('SIGTERM'))
