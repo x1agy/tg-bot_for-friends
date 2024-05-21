@@ -1,0 +1,13 @@
+{
+    "extends": [
+      "prettier"
+    ],
+    "rules": {
+      "jsx-quotes": [
+        1
+      ]
+    },
+    "plugins": [
+      "prettier"
+    ]
+  }

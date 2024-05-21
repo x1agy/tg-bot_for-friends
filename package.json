@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "precommit": "lint-staged"
   },
   "author": "x1agy",
   "license": "ISC",
@@ -13,8 +14,20 @@
     "axios": "^1.6.7",
     "canvas": "^2.11.2",
     "fs": "^0.0.1-security",
-    "openai": "^4.26.0",
     "puppeteer": "^21.10.0",
     "telegraf": "^4.15.3"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
+  },
+  "lint-staged": {
+    "*.{js, jsx}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
