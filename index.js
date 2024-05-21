@@ -470,7 +470,7 @@ async function postImageInImgBB(imgBuffer) {
 	}
 }
 
-bot.launch()
+bot.launch({ port: port })
 
 process.once('SIGINT', () => bot.stop('SIGINT'))
 process.once('SIGTERM', () => bot.stop('SIGTERM'))
