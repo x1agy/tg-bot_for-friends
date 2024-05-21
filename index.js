@@ -470,7 +470,7 @@ async function postImageInImgBB(imgBuffer) {
 	}
 }
 
-bot.launch({ port: port, host: '0.0.0.0' })
+bot.launch({ webhook: { port: port, host: '0.0.0.0' } })
 
 process.once('SIGINT', () => bot.stop('SIGINT'))
 process.once('SIGTERM', () => bot.stop('SIGTERM'))
