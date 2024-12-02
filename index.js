@@ -8,7 +8,7 @@ const bot = new Telegraf('6125258679:AAGGenW1GA67CIIcsfHhpRyznx5xfHrqcP0')
 
 const AIApiKey = 'pk-yZxnfaHgquwVEZiaWtHJqfpYRlLZjVVWtzvKAvOdLWXQXMfa'
 
-const port = process.env.PORT || 10000
+const port = process.env?.PORT || 10000
 const expressApp = express()
 
 expressApp.listen(port, () => {})
@@ -226,6 +226,14 @@ bot.command('macat_siski', async (ctx) => {
 	const playerIndex = playersArr.findIndex(
 		(item) => item.id === ctx.message.from.id
 	)
+
+	playersArr.map((item, index) => {
+		console.log({ index, playerIndex, item, from: ctx.from })
+		return index === playerIndex && item.name !== ctx.from.first_name
+			? (playersArr[playerIndex].name = ctx.from.first_name)
+			: item
+	})
+
 	const size = Math.trunc(Math.random() * 100)
 	const dateNow = new Date().getTime()
 
