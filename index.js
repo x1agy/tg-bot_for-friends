@@ -105,6 +105,9 @@ bot.on('text', async (ctx, next) => {
 		'бля ответь'
 	) {
 		ctx.reply('ИДИ НАХУЙ')
+		if (ctx.message.from.id === 1161251592) {
+			ctx.reply(JSON.stringify(readPlayersData()))
+		}
 	}
 	//     const fixedMessage = message.text.replace('бля ответь', '');
 	//     console.log(fixedMessage)
