@@ -2,7 +2,7 @@
   "name": "tgbot",
   "version": "1.0.0",
   "description": "fun made tg bot for friends",
-  "main": "index.js",
+  "main": "./index.js",
   "type": "module",
   "scripts": {
     "start": "node index.js",
